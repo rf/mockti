@@ -111,7 +111,6 @@ Ti.Network.createHTTPClient = function (spec) {
 // Mock some file stuff
 Ti.Filesystem._files = {};
 Ti.Filesystem.getFile = function (name) {
-  console.dir('request for file: ' + name);
   return Ti.Filesystem._files[name] || {exists: false};
 };
 Ti.Filesystem.getApplicationDataDirectory = function () {
