@@ -1,0 +1,21 @@
+{
+  "author": "Russ Frank <me@russfrank.us>",
+  "name": "tock",
+  "description": "mocking for Titanium",
+  "version": "0.0.0",
+  "homepage": "https://github.com/russfrank/tock",
+  "repository": {
+    "type": "git",
+    "url": "github.com:russfrank/tock"
+  },
+  "main": "tock.js",
+  "dependencies": {
+    "underscore": "*",
+    "eventemitter2": "*"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
