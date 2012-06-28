@@ -5,7 +5,7 @@ of the Titanium API and creates a `Titanium` object with all of the proper
 objects and methods for testing code.  Every proxy is an emitter (as in Ti
 itself).  Methods also emit an event `function::name` when invoked.
 
-This is a continuation of my exploration testing in Titanium.
+This is a continuation of my exploration of testing in Titanium.
 It's a [Zombie.js](http://zombie.labnotes.org/) style
 approach to the problem; rather than running inside of the emulators and 
 simulating events, we instead just simulate the environment in pure 
