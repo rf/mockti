@@ -1,14 +1,14 @@
 {
   "author": "Russ Frank <me@russfrank.us>",
-  "name": "tock",
+  "name": "mockti",
   "description": "mocking for Titanium",
   "version": "0.0.0",
-  "homepage": "https://github.com/russfrank/tock",
+  "homepage": "https://github.com/russfrank/mockti",
   "repository": {
     "type": "git",
-    "url": "github.com:russfrank/tock"
+    "url": "github.com:russfrank/mockti"
   },
-  "main": "tock.js",
+  "main": "mockti.js",
   "dependencies": {
     "underscore": "*",
     "eventemitter2": "*"
