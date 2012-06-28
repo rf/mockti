@@ -11,7 +11,8 @@
   "main": "mockti.js",
   "dependencies": {
     "underscore": "*",
-    "eventemitter2": "*"
+    "eventemitter2": "*",
+    "MD5": "*"
   },
   "devDependencies": {},
   "optionalDependencies": {},

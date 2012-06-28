@@ -3,6 +3,7 @@ var data = JSON.parse(fs.readFileSync(__dirname + '/api.jsca'));
 var Emitter = require('eventemitter2').EventEmitter2;
 var util = require('util');
 var _ = require('underscore');
+var md5 = require('MD5');
 
 // Modify Emitter's prototype to conform with what Ti does
 Emitter.prototype.addEventListener = Emitter.prototype.on;
@@ -105,6 +106,20 @@ Ti.Network.createHTTPClient = function (spec) {
   };
 
   return xhr;
+};
+
+// Mock some file stuff
+Ti.Filesystem._files = {};
+Ti.Filesystem.getFile = function (name) {
+  console.dir('request for file: ' + name);
+  return Ti.Filesystem._files[name] || {exists: false};
+};
+Ti.Filesystem.getApplicationDataDirectory = function () {
+  return '';
+};
+
+Ti.Utils.md5HexDigest = function (input) {
+  return md5.digest_s(input);
 };
 
 module.exports = Ti;
