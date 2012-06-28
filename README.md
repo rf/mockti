@@ -9,8 +9,8 @@ This is a continuation of my exploration testing in Titanium.
 It's a [Zombie.js](http://zombie.labnotes.org/) style
 approach to the problem; rather than running inside of the emulators and 
 simulating events, we instead just simulate the environment in pure javascript.  
-This may prove useful for testing certain types of user interfaces and code.  
-I've found it helpful for mocking requests for testing my network code.
+This may prove useful for testing certain types of user interfaces and code.  I've 
+found it helpful for mocking requests for testing my network code.
 
 Alternatively, one could use some test runner with 
 [this](https://github.com/russfrank/spade). This is the PhantomJS style approach.
