@@ -1,6 +1,6 @@
-# tock
+# mockti
 
-**tock** is a mocking framework for Titanium.  It loads up a `jsca` description
+**mockti** is a mocking framework for Titanium.  It loads up a `jsca` description
 of the Titanium API and creates a `Titanium` object with all of the proper
 objects and methods for testing code.  Every proxy is an emitter (as in Ti
 itself).  Methods also emit an event `function::name` when invoked.
@@ -17,13 +17,13 @@ helpful for mocking requests for testing my network code.
 Install it like this
 
 ```shell
-$ npm i tock
+$ npm i mockti
 ```
 
 Then, use it like this
 
 ```javascript
-require('tock');
+require('mockti');
 
 var xhr = Titanium.Network.createHTTPClient();
 var view = Ti.UI.createView();
@@ -31,7 +31,7 @@ var view = Ti.UI.createView();
 
 You'll probably want to require() some of the code in your `Resources` folder.
 Currently I have my project setup with a `test` folder which has a couple tests;
-these require code out of Resources after requiring `tock`.  Then, I attempt
+these require code out of Resources after requiring `mockti`.  Then, I attempt
 requests, make assertions, etc.
 
 ## Future ideas
