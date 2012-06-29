@@ -47,6 +47,7 @@ function method (namespace, obj, name) {
       this.children = this.children || [];
       this.children.push(view);
     };
+    return;
   }
 
   // otherwise it's some method so just make it emit that this method was
@@ -117,6 +118,7 @@ Ti.Filesystem.createFile = function () {
   var file = {};
   _.extend(file, Ti.Filesystem.File);
   file.exists = false;
+  return file;
 };
 Ti.Filesystem.getFile = function (name) {
   return Ti.Filesystem._files[name] || Ti.Filesystem.createFile();
