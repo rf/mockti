@@ -12,7 +12,7 @@
   "dependencies": {
     "underscore": "*",
     "eventemitter2": "*",
-    "MD5": "*"
+    "MD5": "1.0.0"
   },
   "devDependencies": {},
   "optionalDependencies": {},
