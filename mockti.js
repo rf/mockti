@@ -89,14 +89,16 @@ Ti.Platform ={
   }
 };
 
-Ti.Network._requests = {};
+Ti.Network._requestURLs = {};
+Ti.Network._requests = [];
 var old = Ti.Network.createHTTPClient;
 Ti.Network.createHTTPClient = function (spec) {
   var xhr = old(spec);
   xhr.open = function (method, url) {
     xhr.method = method;
     xhr.url = url;
-    Ti.Network._requests[url] = xhr;
+    Ti.Network._requestURLs[url] = xhr;
+    Ti.Network._requests.push(xhr);
     xhr.fireEvent('function::open', arguments);
   };
 
@@ -110,15 +112,21 @@ Ti.Network.createHTTPClient = function (spec) {
 
 // Mock some file stuff
 Ti.Filesystem._files = {};
+// Non-standard, for convenience
+Ti.Filesystem.createFile = function () {
+  var file = {};
+  _.extend(file, Ti.Filesystem.File);
+  file.exists = false;
+};
 Ti.Filesystem.getFile = function (name) {
-  return Ti.Filesystem._files[name] || {exists: false};
+  return Ti.Filesystem._files[name] || Ti.Filesystem.createFile();
 };
 Ti.Filesystem.getApplicationDataDirectory = function () {
   return '';
 };
 
 Ti.Utils.md5HexDigest = function (input) {
-  return md5.digest_s(input);
+  return md5(input);
 };
 
 module.exports = Ti;
