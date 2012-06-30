@@ -108,6 +108,11 @@ Ti.Network.createHTTPClient = function (spec) {
   return xhr;
 };
 
+Ti.Network._clear = function () {
+  Ti.Network._requestURLs = {};
+  Ti.Network._requests = [];
+};
+
 // Mock some file stuff
 Ti.Filesystem._files = {};
 // Non-standard, for convenience
