@@ -15,11 +15,12 @@ Titanium = Ti = {};
 function retrieve (root, list) {
   var name = list.shift();
   if (!root[name]) {
-    var newobj = {};
-    newobj.name = name;
-    _.extend(newobj, Emitter.prototype);
-    Emitter.call(newobj);
-    root[name] = newobj;
+    var Newobj = function Newobj () {
+      Emitter.call(this);
+    };
+    util.inherits(Newobj, Emitter);
+    Newobj.name = name;
+    root[name] = Newobj;
   }
   var current = root[name];
   if (list.length > 0) return retrieve(current, list);
@@ -34,8 +35,10 @@ function method (namespace, obj, name) {
   if (name.indexOf('create') != -1) {
     obj[name] = function (props) {
       var proto = retrieve(Ti, namespace.concat([name.slice(6)]));
-      var ret = {};
-      _.extend(ret, proto, props);
+      //var ret = {};
+      //_.extend(ret, proto, props);
+      var ret = new proto();
+      _.extend(ret, props);
       return ret;
     };
 
@@ -114,10 +117,18 @@ Ti.Network.createHTTPClient = function (spec) {
 // Mock some file stuff
 Ti.Filesystem._files = {};
 // Non-standard, for convenience
-Ti.Filesystem.createFile = function () {
+Ti.Filesystem.createFile = function (spec) {
   var file = {};
   _.extend(file, Ti.Filesystem.File);
-  file.exists = false;
+  file._exists = false;
+  file.exists = function () {
+    return file._exists;
+  };
+
+  file.read = function () {
+    return {text: spec.text};
+  };
+
   return file;
 };
 Ti.Filesystem.getFile = function (name) {
@@ -130,5 +141,10 @@ Ti.Filesystem.getApplicationDataDirectory = function () {
 Ti.Utils.md5HexDigest = function (input) {
   return md5(input);
 };
+
+Ti.include = function () {};
+Ti.App.Properties.getString = function (name, def) { return def; };
+Ti.App.Properties.getBool = function (name, def) { return def; };
+Ti.App.Properties.getList = function (name, def) { return def; };
 
 module.exports = Ti;
