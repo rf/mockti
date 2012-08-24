@@ -113,6 +113,8 @@ Ti.Network._clear = function () {
   Ti.Network._requests = [];
 };
 
+Ti.Network.online = true;
+
 // Mock some file stuff
 Ti.Filesystem._files = {};
 // Non-standard, for convenience
