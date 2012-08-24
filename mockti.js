@@ -148,4 +148,15 @@ Ti.App.Properties.getString = function (name, def) { return def; };
 Ti.App.Properties.getBool = function (name, def) { return def; };
 Ti.App.Properties.getList = function (name, def) { return def; };
 
+//Ti.API
+Ti.API.info = function(s){
+  console.log(s);
+};
+Ti.API.debug = function(d){
+  console.log(d);
+};
+Ti.API.error = function(e){
+  console.error(e);
+};
+
 module.exports = Ti;
