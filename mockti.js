@@ -5,6 +5,7 @@ var util = require('util');
 var _ = require('underscore');
 var md5 = require('MD5');
 var request = require('request');
+var querystring = require('querystring');
 
 // Modify Emitter's prototype to conform with what Ti does
 Emitter.prototype.addEventListener = Emitter.prototype.on;
@@ -94,6 +95,7 @@ Ti.Network.fakeRequests = true;
 var old = Ti.Network.createHTTPClient;
 Ti.Network.createHTTPClient = function (spec) {
   var xhr = old(spec);
+  xhr.headers = {};
   xhr.open = function (method, url) {
     xhr.method = method;
     xhr.url = url;
@@ -103,24 +105,31 @@ Ti.Network.createHTTPClient = function (spec) {
   };
 
   xhr.send = function (data) {
+    if (data == null) data = {};
     xhr.data = data;
     xhr.fireEvent('function::send', arguments);
     if (!Ti.Network.fakeRequests){
-        request.get({
-          url:xhr.url,
-          method:xhr.method
-          }, function(error, response, body){
-            xhr.responseText = body;
-            xhr.status = response.statusCode;
-            xhr.readyState = 4;
-            if (error != null){
-              xhr.error();
-            } else {
-              xhr.onload();
-            }
-        });
+      request.get({
+        headers:xhr.headers,
+        url:xhr.url,
+        method:xhr.method,
+        body:querystring.stringify(xhr.data)
+        }, function(error, response, body){
+          xhr.responseText = body;
+          xhr.status = response.statusCode;
+          xhr.readyState = 4;
+          if (error != null){
+            xhr.error();
+          } else {
+            xhr.onload();
+          }
+      });
     }
   };
+
+  xhr.setRequestHeader = function(key, value){
+    xhr.headers[key] = value
+  }
 
   return xhr;
 };
