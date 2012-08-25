@@ -90,7 +90,7 @@ Ti.Platform ={
 
 Ti.Network._requestURLs = {};
 Ti.Network._requests = [];
-Ti.Network.FakeRequests = true;
+Ti.Network.fakeRequests = true;
 var old = Ti.Network.createHTTPClient;
 Ti.Network.createHTTPClient = function (spec) {
   var xhr = old(spec);
@@ -105,23 +105,20 @@ Ti.Network.createHTTPClient = function (spec) {
   xhr.send = function (data) {
     xhr.data = data;
     xhr.fireEvent('function::send', arguments);
-    if (!Ti.Network.FakeRequests){
-      console.log('Going to make a real request');
-      if (xhr.method == 'GET' || xhr.method == 'get'){
-        request.get(xhr.url, function(error, response, body){
-          xhr.responseText = body;
-          xhr.status = response.statusCode;
-          xhr.readyState = 4;
-          if (error != null){
-            xhr.error();
-          } else {
-            xhr.onload();
-          }
+    if (!Ti.Network.fakeRequests){
+        request.get({
+          url:xhr.url,
+          method:xhr.method
+          }, function(error, response, body){
+            xhr.responseText = body;
+            xhr.status = response.statusCode;
+            xhr.readyState = 4;
+            if (error != null){
+              xhr.error();
+            } else {
+              xhr.onload();
+            }
         });
-
-      } else if (xhr.method == 'POST' || xhr.method == 'post'){
-
-      }
     }
   };
 
