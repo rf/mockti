@@ -119,7 +119,7 @@ Ti.Network.createHTTPClient = function (spec) {
           xhr.status = response.statusCode;
           xhr.readyState = 4;
           if (error != null){
-            xhr.error();
+            xhr.onerror();
           } else {
             xhr.onload();
           }
