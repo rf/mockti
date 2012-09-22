@@ -6,6 +6,7 @@ var _ = require('underscore');
 var md5 = require('MD5');
 var request = require('request');
 var querystring = require('querystring');
+var assert = require('assert');
 
 // Modify Emitter's prototype to conform with what Ti does
 Emitter.prototype.addEventListener = Emitter.prototype.on;
@@ -25,14 +26,61 @@ function retrieve (root, list) {
   else return current;
 }
 
-function method (namespace, obj, name) {
+var assertTypeMsg = '<%=type%>#<%=name%> expected argument <%=index%> to be of' +
+  ' type <%=expected%>, got type <%=found%>';
+
+function assertType (type, expect, objType, index, name) {
+  assert(type === expect, _.template(assertTypeMsg, {
+    type: objType, index: index, expected: expect, found: type, name: name
+  }));
+}
+
+function assertTypeOr (type, expect, expectOr, objType, index, name) {
+  assert(type === expect || type === expectOr, _.template(assertTypeMsg, {
+    type: objType, index: index, expected: expect + " or " + expectOr, 
+    found: type, name: name
+  }));
+}
+
+function assertNotUndefined (arg, objType, index, name) {
+  assert(arg !== 'undefined', objType + "#" + name + " requires argument " +
+    index + " to be specified");
+}
+
+function assertTypes (args, expectations, obj, name) {
+  var builtins = ["object", "function", "number", "string"];
+  var possibleObject = ["Titanium.UI.Animation"];
+
+  // If the argument is required and defined, we check.
+  // If the argument is not required and defined, we check.
+  // If the argument is not required and not defined, we don't check.
+  // If the argument is required and not defined, we check.
+
+  expectations.forEach(function (item, index) {
+    if (item.type && (args[index] !== undefined || item.usage == 'required')) {
+      if (builtins.indexOf(item.type.toLowerCase()) != -1)
+        assertType(typeof args[index], item.type.toLowerCase(), obj._type, index, name);
+
+      else if (possibleObject.indexOf(item.type) != -1)
+        assertTypeOr(
+          (args[index] && args[index]._type) || typeof args[index], 
+          'object', item.type, obj._type, index, name
+        );
+
+      // otherwise just make sure it's defined
+      else assertNotUndefined(args[index], obj._type, index, name);
+    }
+  });
+}
+
+function method (namespace, obj, fn) {
   // dont want to overwrite these
-  if (['addEventListener', 'removeEventListener', 'fireEvent'].indexOf(name) != -1) return;
+  if (['addEventListener', 'removeEventListener', 'fireEvent'].indexOf(fn.name) != -1) return;
 
   // factory
-  if (name.indexOf('create') != -1) {
-    obj[name] = function (props) {
-      var base = retrieve(Ti, namespace.concat([name.slice(6)]));
+  if (fn.name.indexOf('create') != -1) {
+    obj[fn.name] = function (props) {
+      var base = retrieve(Ti, namespace.concat([fn.name.slice(6)]));
       var ret = {};
       _.extend(ret, base, props);
       return ret;
@@ -41,18 +89,40 @@ function method (namespace, obj, name) {
     return;
   }
 
-  if (name == 'add') {
+  if (fn.name == 'add') {
     obj.add = function (view) {
       this.children = this.children || [];
       this.children.push(view);
+
+      if (this.fireEvent) this.fireEvent('function::add', arguments);
+
+      if (fn.parameters && fn.parameters.length > 0 && Ti.assertTypes)
+        assertTypes(arguments, fn.parameters, obj, fn.name);
+    };
+    return;
+  }
+
+  if (fn.name == 'remove') {
+    obj.remove = function (view) {
+      this.children = this.children || [];
+      this.children = this.children.filter(function (item) {
+        return item !== view;
+      });
+      if (this.fireEvent) this.fireEvent('function::remove', arguments);
+
+      if (fn.parameters && fn.parameters.length > 0 && Ti.assertTypes)
+        assertTypes(arguments, fn.parameters, obj, fn.name);
     };
     return;
   }
 
   // otherwise it's some method so just make it emit that this method was
   // called
-  obj[name] = function () {
-    if (this.fireEvent) this.fireEvent('function::' + name, {});
+  obj[fn.name] = function () {
+    if (this.fireEvent) this.fireEvent('function::' + fn.name, arguments);
+
+    if (fn.parameters && fn.parameters.length > 0 && Ti.assertTypes)
+      assertTypes(arguments, fn.parameters, obj, fn.name);
   };
 }
 
@@ -64,11 +134,13 @@ data.types.forEach(function (item) {
   var name = item.name.slice(9);
   var namespace = name.split('.').slice(-1);
   var obj = retrieve(Ti, name.split('.'));
+  obj._type = item.name;
   
   item.functions.forEach(function (fn) {
-    method(namespace, obj, fn.name);
+    method(namespace, obj, fn);
   });
 
+  // TODO: do something with this data
   item.properties.forEach(function (prop) {
   });
 });
@@ -88,6 +160,9 @@ Ti.Platform ={
     dpi: 160
   }
 };
+
+// Assert types by default.
+Ti.assertTypes = true;
 
 // This is my sortof silly request mocking system. It just adds requests
 // into these objects, they're like Titanium XHR requests, they can just be
