@@ -89,9 +89,20 @@ Ti.Platform ={
   }
 };
 
+// This is my sortof silly request mocking system. It just adds requests
+// into these objects, they're like Titanium XHR requests, they can just be
+// pulled out and modified, or you can call their `.onerror()` or `.onload()`
+// method.
+
+// Requests by URL
 Ti.Network._requestURLs = {};
+
+// Requests in an array
 Ti.Network._requests = [];
-Ti.Network.fakeRequests = true;
+
+// Whether or not to use the silly fake system
+Ti.Network.fakeRequests = false;
+
 var old = Ti.Network.createHTTPClient;
 Ti.Network.createHTTPClient = function (spec) {
   var xhr = old(spec);
@@ -105,31 +116,39 @@ Ti.Network.createHTTPClient = function (spec) {
   };
 
   xhr.send = function (data) {
-    if (data == null) data = {};
+    if (!data) data = {};
     xhr.data = data;
     xhr.fireEvent('function::send', arguments);
-    if (!Ti.Network.fakeRequests){
-      request.get({
-        headers:xhr.headers,
-        url:xhr.url,
-        method:xhr.method,
-        body:querystring.stringify(xhr.data)
-        }, function(error, response, body){
-          xhr.responseText = body;
-          xhr.status = response.statusCode;
-          xhr.readyState = 4;
-          if (error != null){
-            xhr.onerror();
-          } else {
-            xhr.onload();
-          }
+
+    if (!Ti.Network.fakeRequests) {
+      request({
+        headers: xhr.headers,
+        url: xhr.url,
+        method: xhr.method,
+        body: querystring.stringify(xhr.data)
+      }, function(error, response, body){
+        var event = {source: xhr};
+
+        xhr.responseText = body;
+        xhr.status = response.statusCode;
+        xhr.readyState = 4;
+
+        if (error || xhr.status != 200) {
+          xhr.onerror.call(xhr, event);
+        }
+        
+        else {
+          if (typeof xhr.onreadystatechange == "function")
+            xhr.onreadystatechange.call(xhr, event);
+          xhr.onload.call(xhr, event);
+        }
       });
     }
   };
 
   xhr.setRequestHeader = function(key, value){
-    xhr.headers[key] = value
-  }
+    xhr.headers[key] = value;
+  };
 
   return xhr;
 };
