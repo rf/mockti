@@ -38,10 +38,14 @@ Currently I have my project setup with a `test` folder which has a couple tests;
 these require code out of Resources after requiring `mockti`.  Then, I attempt
 requests, make assertions, etc.
 
-## Future ideas
+You can also make http requests, which will go through the npm `request` module.
+Check out [nock](http://github.com/flatiron/nock) if you'd like to mock these
+requests.
 
-1. The `jsca` file has type information.  Add setters which assert types.
-2. Assert types of arguments.
+## Type Assertions
+
+Simple types are asserted. For example, functions that accept a number or string
+will have their argument's type asserted.
 
 ## License
 
