@@ -267,6 +267,18 @@ function mockti (apiPath) {
     return md5(input);
   };
 
+  (function () {
+    var o = Ti.UI.createWindow;
+    Ti.UI.createWindow = function () {
+      var win = o.apply(null, arguments);
+      if (Ti.Platform.osname == "android") {
+        win.activity = {};
+        _.extend(win.activity, Ti.Android.Activity);
+      }
+      return win;
+    };
+  }());
+
   Ti.include = function () {};
   Ti.App.Properties.getString = function (name, def) { return def; };
   Ti.App.Properties.getBool = function (name, def) { return def; };

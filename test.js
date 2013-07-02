@@ -18,6 +18,27 @@ suite('ui', function () {
     b.fireEvent('click');
     assert(c == "baz");
   });
+
+  suite('window activity property', function () {
+    var a = Ti.UI.createWindow();
+
+    test('exists, is of right type', function () {
+      assert(a.activity);
+      assert(typeof a.activity.startActivity === "function");
+    });
+
+    test('methods work', function () {
+      var b = false;
+
+      a.activity.addEventListener('function::startActivity', function () {
+        b = true;
+      });
+
+      a.activity.startActivity({intent: 'im an intent object'});
+
+      assert(b, 'event listener called');
+    });
+  });
 });
 
 suite('xhr', function () {
