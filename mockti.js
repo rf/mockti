@@ -245,7 +245,7 @@ function mockti (apiPath) {
   Ti.Filesystem.createFile = function (spec) {
     var file = {};
     _.extend(file, Ti.Filesystem.File);
-    file._exists = false;
+    file._exists = spec.exists;
     file.exists = function () {
       return file._exists;
     };
