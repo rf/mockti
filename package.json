@@ -2,7 +2,7 @@
   "author": "Russ Frank <me@russfrank.us>",
   "name": "mockti",
   "description": "mocking for Titanium",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/russfrank/mockti",
   "scripts" : {
     "test": "mocha -R spec -u tdd test.js"
