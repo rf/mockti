@@ -29,11 +29,18 @@ $ npm i mockti
 Then, use it like this
 
 ```javascript
-require('mockti');
+var mockti = require('mockti');
+
+// make it global 
+Ti = mockti();
 
 var xhr = Titanium.Network.createHTTPClient();
 var view = Ti.UI.createView();
 ```
+
+The `mockti()` function takes as an argument the path to an `api.jsca` file.
+These are included with every sdk build. If you don't pass a path, it'll use
+the bundled `api.jsca`, which currently is from 3.1.0 GA.
 
 You'll probably want to require() some of the code in your `Resources` folder.
 Currently I have my project setup with a `test` folder which has a couple tests;
