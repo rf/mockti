@@ -279,4 +279,12 @@ Ti.API.error = function(e){
   console.error(e);
 };
 
+Ti.UI.Window.open = function () {
+  Ti.UI.fireEvent("window::open", this);
+};
+
+alert = function () {
+  Ti.fireEvent('alert', arguments);
+};
+
 module.exports = Ti;
