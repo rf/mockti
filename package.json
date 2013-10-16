@@ -18,6 +18,7 @@
     "MD5": "1.0.0",
     "request":"2.9.203"
   },
+  "files": ["api.jsca"],
   "devDependencies": {
     "mocha": "*",
     "nock": "*"
