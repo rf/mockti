@@ -1,6 +1,6 @@
 # mockti
 
-[![build status](https://secure.travis-ci.org/russfrank/mockti.png)](http://travis-ci.org/russfrank/mockti)
+[![build status](https://secure.travis-ci.org/rf/mockti.png)](http://travis-ci.org/rf/mockti)
 
 **mockti** is a mocking framework for Titanium.  It loads up a `jsca` description
 of the Titanium API and creates a `Titanium` object with all of the proper
