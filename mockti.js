@@ -22,8 +22,12 @@ function mockti (apiPath) {
   function retrieve (root, list) {
     var name = list.shift();
     if (!root[name]) {
-      root[name] = {};
-      _.extend(root[name], Emitter.prototype);
+      if (root['_' + name]) {
+        root[name] = root['_' + name];
+      } else {
+        root[name] = {};
+        _.extend(root[name], Emitter.prototype);
+      }
     }
     var current = root[name];
     if (list.length > 0) return retrieve(current, list);
