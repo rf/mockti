@@ -15,7 +15,7 @@
   "dependencies": {
     "underscore": "*",
     "eventemitter2": "*",
-    "node-appc": "*",
+    "node-appc": "0.2.14",
     "MD5": "1.0.0",
     "request": "2.9.203"
   },
