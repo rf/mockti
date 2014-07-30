@@ -4,7 +4,7 @@
   "description": "mocking for Titanium",
   "version": "1.1.1",
   "homepage": "https://github.com/russfrank/mockti",
-  "scripts" : {
+  "scripts": {
     "test": "mocha -R spec -u tdd test.js"
   },
   "repository": {
@@ -15,10 +15,11 @@
   "dependencies": {
     "underscore": "*",
     "eventemitter2": "*",
+    "node-appc": "0.2.14",
     "MD5": "1.0.0",
-    "request":"2.9.203"
+    "request": "2.9.203"
   },
-  "files": ["api.jsca", "mockti.js", "README.md", "LICENSE", "test.js"],
+  "files": ["mockti.js", "README.md", "LICENSE", "test.js"],
   "devDependencies": {
     "mocha": "*",
     "nock": "*"

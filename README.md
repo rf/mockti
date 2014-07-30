@@ -38,9 +38,9 @@ var xhr = Titanium.Network.createHTTPClient();
 var view = Ti.UI.createView();
 ```
 
-The `mockti()` function takes as an argument the path to an `api.jsca` file.
-These are included with every sdk build. If you don't pass a path, it'll use
-the bundled `api.jsca`, which currently is from 3.1.0 GA.
+The `mockti()` function takes as an argument the path to an `api.jsca` file or full name Titanium SDK full e.g. `3.1.0.GA`.
+These are included with every sdk build. If you don't pass a path, it'll use 
+system selected sdk that you can see by run command `ti config` in console.
 
 You'll probably want to require() some of the code in your `Resources` folder.
 Currently I have my project setup with a `test` folder which has a couple tests;
