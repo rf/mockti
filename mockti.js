@@ -1,8 +1,16 @@
-function mockti (apiPath) {
-  if (!apiPath) apiPath = __dirname + '/api.jsca';
-
+function mockti (apiPath) {    
+  var path = require('path');
   var fs = require('fs');
-  var data = JSON.parse(fs.readFileSync(__dirname + '/api.jsca'));
+  
+  if (!apiPath || !fs.existsSync(apiPath)) {
+      try{
+        apiPath = findJsca(apiPath);
+      } catch (e) {          
+          throw '[mockti] ' + e;
+      }
+  }
+  
+  var data = JSON.parse(fs.readFileSync(apiPath));
   var Emitter = require('eventemitter2').EventEmitter2;
   var util = require('util');
   var _ = require('underscore');
@@ -18,6 +26,46 @@ function mockti (apiPath) {
 
   var Ti;
   Ti = {};
+  
+  function findJsca(sdkName) {
+      var appc = require('node-appc');
+      var jscaPath;
+      appc.environ.detect();
+      if(sdkName) {
+        var n = appc.environ.getSDK(sdkName);
+        if(!n) {
+            throw 'Titanium SDK not found: ' + sdkName; 
+        }
+        jscaPath = path.join(n.path, 'api.jsca');
+        if(!fs.existsSync(jscaPath)) {
+            throw "Specified Titanium SDK version not found.";
+        }
+      
+      } else {
+          var configFilePath = path.join(process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME'], '.titanium', 'config.json');
+          if (!fs.existsSync(configFilePath)) {
+              throw "Can't find titanium configuration."; 
+          }
+          
+          var config;
+          try {
+              config = JSON.parse(fs.readFileSync(configFilePath));               
+          } catch(e) {
+              throw "Can't parse titanium configuration.";
+          }
+          
+          if(config.sdk && config.sdk.selected){
+              jscaPath = path.join(appc.environ.getSDK(config.sdk.selected).path, 'api.jsca');
+              if(!fs.existsSync(jscaPath)) {
+                  throw "Can't find api.jsca in default installation.";
+              }
+              console.log("Using default Titanium SDK: " + config.sdk.selected);
+          } else {
+              throw "Default Titanium SDK installation not found.";
+          }              
+      }
+      return jscaPath;
+  }
 
   function retrieve (root, list) {
     var name = list.shift();
